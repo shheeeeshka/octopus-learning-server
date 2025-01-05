@@ -1,13 +1,13 @@
 import Test from "../models/test-model.js";
 
 class TestService {
-    async createTest(questions = [], topicId = "", withTimer = false, testType = "default") {
-        const newTest = await Test.create({ questions, topicId, withTimer, type: testType }).catch(() => null);
+    async createTest(questions = [], moduleId = "", withTimer = false, testType = "default") {
+        const newTest = await Test.create({ questions, moduleId, withTimer, type: testType }).catch(() => null);
         return newTest;
     }
 
-    async getTest(topicId = "") {
-        const test = await Test.findOne({ topicId }).catch(() => null);
+    async getTest(moduleId = "") {
+        const test = await Test.findOne({ moduleId }).catch(() => null);
         return test;
     }
 
@@ -25,4 +25,4 @@ export default new TestService();
 //     { value: "Вопрос 3", isCorrect: true },
 // ];
 
-// const newTest = await testService.createTest(questions, topicId);
+// const newTest = await testService.createTest(questions, moduleId);

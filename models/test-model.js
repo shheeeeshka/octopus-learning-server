@@ -19,7 +19,7 @@ const testSchema = new mongoose.Schema({
         type: String,
         default: "default",
     },
-    topicId: {
+    moduleId: {
         type: String,
     },
 }, { timestamps: true });

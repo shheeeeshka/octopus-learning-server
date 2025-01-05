@@ -4,7 +4,8 @@ class LessonController {
     async createLesson(req, res, next) {
         try {
             const { title, description, content } = req.body;
-            const lesson = await lessonService.createLesson(title, description, content);
+            const { img } = req.files;
+            const lesson = await lessonService.createLesson(title, description, content, img);
             return res.json(lesson);
         } catch (e) {
             next(e);

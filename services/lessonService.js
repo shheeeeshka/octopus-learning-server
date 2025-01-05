@@ -1,8 +1,10 @@
 import Lesson from "../models/lesson-model.js";
+import fileService from "./fileService.js";
 
 class LessonService {
-    async createLesson(title = "", description = "", content = "") {
-        const newLesson = await Lesson.create({ title, description, content }).catch(() => null);
+    async createLesson(title = "", description = "", content = "", img) {
+        const fileName = fileService.saveImg(img);
+        const newLesson = await Lesson.create({ title, description, content, img: fileName }).catch(() => null);
         return newLesson;
     }
 

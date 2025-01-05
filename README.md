@@ -64,8 +64,59 @@ To get a local copy up and running, follow these steps:
 
 ## API Endpoints
 
+### Auth Endpoints
+
+- **POST /auth/registration**: Register a new user.
+  - Request Body: `{ "name": "<string>", "surname": "<string>", "password": "<string>", "email": "<string>" }`
+  - Response: `{ "message": "User registered successfully!" }`
+
+- **POST /auth/login**: Log in an existing user.
+  - Request Body: `{ "email": "<string>", "password": "<string>" }`
+  - Response: `{ "accessToken": "<token>", "refreshToken": "<token>", "user": "<user>", }`
+
+- **POST /auth/logout**: Log out user.
+  - Request Body: `{ "email": "<string>", "password": "<string>" }`
+  - Response: `{ "message": "User logged out successfully!" }`
+
+- **GET /auth/refresh**: Refresh your access token using your refresh token stored in cookies.
+   - Response: `{ "accessToken": "<token>", "refreshToken": "<token>", "user": "<user>" }`
+
+### User Account Endpoints
+
+- **GET /account/activation/<link>**: Confirm your email.
+
+- **DELETE /account/delete-account/<id>**: Delete your account using your id.
+  - Response: `{ "user": "<user>" }`
+
+### SQL Learning Endpoints
+
+- **GET /lessons/all-modules**: Fetch all SQL learning modules.
+  - Response: `[ { "id": "<string>", "title": "<string>", "description": "<string>" }, ... ]`
+
+- **POST /tests/create-test**: Create a new SQL test.
+  - Request Body: `{ "moduleId": "<string>", "questions": [ { "question": "<string>", "options": ["<option1>", "<option2>"], "correct": "<option>" } ] }`
+  - Response: `{ "message": "Test created successfully!" }`
+
 ## Authentication
+
+All protected routes require a valid JWT. Upon successful login, the server will return an access token and a refresh token. The access token should be sent in the `Authorization` header as a Bearer token for any protected routes.
+
+Example of an Authorization header:
+
+To refresh the access token, use the refresh token by sending a request to:
+- **GET /api/auth/refresh**
+  - Request Body: `{ "token": "<refresh_token>" }`
+  - Response: `{ "accessToken": "<new_access_token>", "refreshToken": "<new_refresh_token>", "user": "<user>" }`
 
 ## Contributing
 
+Contributions are welcome! If you would like to contribute to the Octopus Learning Platform, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Write code and tests for your changes.
+4. Create a pull request detailing your changes and why you believe they should be merged.
+
 ## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

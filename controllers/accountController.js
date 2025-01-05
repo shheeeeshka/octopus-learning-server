@@ -13,7 +13,7 @@ class AccountController {
 
     async deleteAccount(req, res, next) {
         try {
-            const id = req.params.id;
+            const { id } = req.params;
             const { token } = req.cookies;
             const user = await accountService.deleteAccount(id, token);
             return res.json(user);

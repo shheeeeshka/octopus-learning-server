@@ -10,6 +10,9 @@ const lessonSchema = new mongoose.Schema({
     content: {
         type: String,
     },
+    img: {
+        type: String,
+    },
 }, { timestamps: true });
 
 const Lesson = mongoose.model("lesson", lessonSchema);

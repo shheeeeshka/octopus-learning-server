@@ -3,8 +3,8 @@ import testService from "../services/testService.js";
 class TestController {
     async createTest(req, res, next) {
         try {
-            const { questions, topicId, withTimer, testType } = req.body;
-            const test = await testService.createTest(questions, topicId, withTimer, testType);
+            const { questions, moduleId, withTimer, testType } = req.body;
+            const test = await testService.createTest(questions, moduleId, withTimer, testType);
             return res.json(test);
         } catch (e) {
             next(e);
@@ -13,8 +13,8 @@ class TestController {
 
     async getTest(req, res, next) {
         try {
-            const { topicId } = req.params;
-            const test = await testService.getTest(topicId);
+            const { moduleId } = req.params;
+            const test = await testService.getTest(moduleId);
             return res.json(test);
         } catch (e) {
             next(e);

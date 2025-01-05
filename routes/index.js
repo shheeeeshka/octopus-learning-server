@@ -11,9 +11,9 @@ const router = new Router();
 
 router.use("/auth", authRouter);
 router.use("/account", accountRouter);
-router.use("/user", userRouter);
-router.use("/achievement", achievementRouter);
-router.use("/lesson", lessonRouter);
-router.use("/test", testRouter);
+router.use("/users", userRouter);
+router.use("/achievements", achievementRouter);
+router.use("/lessons", lessonRouter);
+router.use("/tests", testRouter);
 
 export default router;
