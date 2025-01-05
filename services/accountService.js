@@ -1,11 +1,11 @@
 import ApiError from "../exceptions/ApiError.js";
 import bcrypt from "bcrypt";
-import { User } from "../models/models.js";
 import tokenService from "./tokenService.js";
+import User from "../models/user-model.js";
 
 class AccountService {
     async activateAccount(activationLink) {
-        const user = await User.findOne({ where: { activationLink } });
+        const user = await User.findOne({ activationLink });
 
         if (!user) {
             throw ApiError.BadRequest(`Incorrect activation link`);
@@ -15,19 +15,19 @@ class AccountService {
         return user.save();
     }
 
-    async deleteAccount(id, token) {
+    async deleteAccount(_id, token) {
         if (!token) {
             throw ApiError.Unauthorized();
         }
 
         const decodedToken = tokenService.validateRefreshToken(token);
 
-        if (id != decodedToken.id) {
-            throw ApiError.Forbidden(`We're sorry, but you don't have permission to delete account ${id}`);
+        if (_id != decodedToken._id) {
+            throw ApiError.Forbidden(`We're sorry, but you don't have permission to delete account ${_id}`);
         }
 
         await tokenService.removeToken(token);
-        const user = await User.destroy({ where: { id } });
+        const user = await User.findOneAndDelete({ _id });
         return user;
     }
 
@@ -41,7 +41,7 @@ class AccountService {
             throw ApiError.Forbidden(`We're sorry, but you don't have permission to change password for ${email}`);
         }
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ email });
         if (!user) {
             throw ApiError.BadRequest();
         }

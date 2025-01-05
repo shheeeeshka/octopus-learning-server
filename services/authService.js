@@ -1,15 +1,15 @@
 import * as uuid from "uuid";
 import bcrypt from "bcrypt";
 
-import { User } from "../models/models.js";
 import ApiError from "../exceptions/ApiError.js";
 import mailService from "./mailService.js";
 import UserDto from "../dtos/userDto.js";
 import tokenService from "./tokenService.js";
+import User from "../models/user-model.js";
 
 class AuthService {
-    async registration(email, password) {
-        const candidate = await User.findOne({ where: { email } });
+    async registration(email = "", password = "", name = "", surname = "") {
+        const candidate = await User.findOne({ email });
 
         if (candidate) {
             throw ApiError.BadRequest(`User ${email} already exists`);
@@ -22,13 +22,15 @@ class AuthService {
             email,
             password: hashPassword,
             activationLink,
+            name,
+            surname,
         });
 
         // await mailService.sendActivationMail(email, `${process.env.API_URL}/user/activation/${activationLink}`); add smtp data to send activation mail
 
-        const userDto = new UserDto({ ...user.dataValues });
+        const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
         return {
             ...tokens,
@@ -37,7 +39,7 @@ class AuthService {
     }
 
     async login(email, password) {
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ email });
         if (!user) {
             throw ApiError.BadRequest(`User ${email} not found`)
         }
@@ -47,9 +49,9 @@ class AuthService {
             throw ApiError.BadRequest(`Incorrect password`)
         }
 
-        const userDto = new UserDto({ ...user.dataValues });
+        const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
         return {
             ...tokens,
@@ -73,11 +75,11 @@ class AuthService {
             throw ApiError.Unauthorized();
         }
 
-        const user = await User.findOne({ where: { id: userData.id } });
-        const userDto = new UserDto({ ...user.dataValues });
+        const user = await User.findOne({ _id: userData._id });
+        const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({ ...userDto });
 
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
         return {
             ...tokens,

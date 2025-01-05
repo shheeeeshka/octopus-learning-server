@@ -5,8 +5,8 @@ import checkAuth from "../middleware/authMiddleware.js";
 
 const router = new Router();
 
-router.post('/change-password', accountController.changePassword);
-router.get('/activation/:link', accountController.activateAccount);
-router.delete('/delete-account/:id', accountController.deleteAccount);
+router.post("/change-password", accountController.changePassword);
+router.get("/activation/:link", accountController.activateAccount);
+router.delete("/delete-account/:id", accountController.deleteAccount);
 
 export default router;
