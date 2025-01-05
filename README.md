@@ -31,7 +31,7 @@ To get a local copy up and running, follow these steps:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/octopus-learning-platform-server.git
+   git clone https://github.com/shheeeeshka/octopus-learning-server.git
 
 2. **Navigate to the project directory**:
    ```bash
