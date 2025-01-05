@@ -42,6 +42,7 @@ To get a local copy up and running, follow these steps:
    npm install
 
 4. **Set up environment variables**:
+    ```
     PORT=5070
     ATLAS_URI=mongodb+srv://<username>:<password>@cluster0.dnnr7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
@@ -55,6 +56,7 @@ To get a local copy up and running, follow these steps:
 
     API_URL=http://192.168.0.104:5070
     CLIENT_URL=http://192.168.0.104:5173
+    ```
 
 5. **Start the server**:
    ```bash
