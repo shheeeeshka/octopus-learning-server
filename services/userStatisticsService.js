@@ -1,5 +1,6 @@
 import ApiError from "../exceptions/ApiError.js";
 import UserStatistics from "../models/user-statistics-model.js";
+import achievementService from "./achievementService.js";
 
 class UserStatisticsService {
     async updateStatistics(bestTime = "", coveredTopicsCount = 0, correctAnswersCount = 0, totalAnswersCount = 0, userId = "", topicId = "") {
@@ -19,9 +20,17 @@ class UserStatisticsService {
         if (totalAnswersCount && typeof totalAnswersCount === "number") updateObject["totalAnswersCount"] = statistics.totalAnswersCount + totalAnswersCount;
 
         await UserStatistics.updateOne({ userId }, updateObject);
-
         const updatedStatistics = await UserStatistics.findOne({ userId });
-        return updatedStatistics;
+
+        let newUserAchievement = null;
+        if (updatedStatistics.correctAnswersCount === 5) newUserAchievement = await achievementService.issueAchievement("5 correct answers", userId);
+        if (updatedStatistics.correctAnswersCount === 10) newUserAchievement = await achievementService.issueAchievement("10 correct answers", userId);
+        if (updatedStatistics.coveredTopicsCount === 1) newUserAchievement = await achievementService.issueAchievement("First covered module", userId);
+
+        return {
+            updatedStatistics,
+            newUserAchievement,
+        };
     }
 }
 

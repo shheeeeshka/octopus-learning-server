@@ -8,6 +8,7 @@ import tokenService from "./tokenService.js";
 import User from "../models/user-model.js";
 import UserStatistics from "../models/user-statistics-model.js";
 import UserStatisticsDto from "../dtos/userStatisticsDto.js";
+import achievementService from "./achievementService.js";
 
 class AuthService {
     async registration(email = "", password = "", name = "", surname = "") {
@@ -28,7 +29,7 @@ class AuthService {
             surname,
         });
         const userStatistics = await UserStatistics.create({ userId: user._id });
-
+        const newUserAchievement = await achievementService.issueAchievement("", user._id);
 
         // await mailService.sendActivationMail(email, `${process.env.API_URL}/user/activation/${activationLink}`); add smtp data to send activation mail
 
@@ -42,6 +43,7 @@ class AuthService {
             ...tokens,
             user: userDto,
             userStatistics: userStatisticsDto,
+            newUserAchievement,
         }
     }
 
@@ -56,9 +58,10 @@ class AuthService {
             throw ApiError.BadRequest(`Incorrect password`)
         }
 
-        const userStatistics = await UserStatistics.findOne({ userId: user._id });
         const userDto = new UserDto(user);
+        const userStatistics = await UserStatistics.findOne({ userId: user._id });
         const userStatisticsDto = new UserStatisticsDto(userStatistics);
+        const userAchievements = await achievementService.findUserAchievements({ userId: user._id });
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
@@ -66,6 +69,7 @@ class AuthService {
             ...tokens,
             user: userDto,
             userStatistics: userStatisticsDto,
+            userAchievements,
         }
     }
 
@@ -87,13 +91,18 @@ class AuthService {
 
         const user = await User.findOne({ _id: userData._id });
         const userDto = new UserDto(user);
+        const userStatistics = await UserStatistics.findOne({ userId: user._id });
+        const userStatisticsDto = new UserStatisticsDto(userStatistics);
+        const userAchievements = await achievementService.findUserAchievements({ userId: user._id });
         const tokens = tokenService.generateTokens({ ...userDto });
 
         await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
         return {
             ...tokens,
-            user: userDto
+            user: userDto,
+            userStatistics: userStatisticsDto,
+            userAchievements,
         }
     }
 }

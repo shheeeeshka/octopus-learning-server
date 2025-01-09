@@ -14,6 +14,10 @@ const testSchema = new mongoose.Schema({
             type: Boolean,
             default: false,
         },
+        hint: {
+            type: String,
+            default: "",
+        },
     }],
     withTimer: {
         type: Boolean,

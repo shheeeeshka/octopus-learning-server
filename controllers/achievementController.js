@@ -10,6 +10,16 @@ class AchievementController {
             next(e);
         }
     }
+
+    // async findUserAchievements(req, res, next) {
+    //     try {
+    //         const { userId } = req.params;
+    //         const achievements = await achievementService.findUserAchievements(userId);
+    //         return res.json(achievements);
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 }
 
 export default new AchievementController();
