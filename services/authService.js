@@ -6,6 +6,8 @@ import mailService from "./mailService.js";
 import UserDto from "../dtos/userDto.js";
 import tokenService from "./tokenService.js";
 import User from "../models/user-model.js";
+import UserStatistics from "../models/user-statistics-model.js";
+import UserStatisticsDto from "../dtos/userStatisticsDto.js";
 
 class AuthService {
     async registration(email = "", password = "", name = "", surname = "") {
@@ -25,16 +27,21 @@ class AuthService {
             name,
             surname,
         });
+        const userStatistics = await UserStatistics.create({ userId: user._id });
+
 
         // await mailService.sendActivationMail(email, `${process.env.API_URL}/user/activation/${activationLink}`); add smtp data to send activation mail
 
         const userDto = new UserDto(user);
+        const userStatisticsDto = new UserStatisticsDto(userStatistics);
+        console.log({ ...userDto, ...userStatisticsDto });
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
         return {
             ...tokens,
             user: userDto,
+            userStatistics: userStatisticsDto,
         }
     }
 
@@ -49,13 +56,16 @@ class AuthService {
             throw ApiError.BadRequest(`Incorrect password`)
         }
 
+        const userStatistics = await UserStatistics.findOne({ userId: user._id });
         const userDto = new UserDto(user);
+        const userStatisticsDto = new UserStatisticsDto(userStatistics);
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
         return {
             ...tokens,
-            user: userDto
+            user: userDto,
+            userStatistics: userStatisticsDto,
         }
     }
 

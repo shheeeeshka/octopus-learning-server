@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 const testSchema = new mongoose.Schema({
-    questions: [{
+    question: {
+        type: String,
+        required: true,
+    },
+    answers: [{
         value: {
             type: String,
             required: true,

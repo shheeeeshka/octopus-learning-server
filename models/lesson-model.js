@@ -10,7 +10,7 @@ const lessonSchema = new mongoose.Schema({
     content: {
         type: String,
     },
-    img: {
+    previewImg: {
         type: String,
     },
 }, { timestamps: true });
