@@ -7,11 +7,14 @@ const achievementSchema = new mongoose.Schema({
     img: {
         type: String,
     },
+    description: {
+        type: String,
+    },
     userId: {
         type: String,
     },
 }, { timestamps: true });
 
-const Achievement = mongoose.model("achievement", achievementSchema);
+const UserAchievement = mongoose.model("user_achievement", achievementSchema);
 
-export default Achievement;
+export default UserAchievement;

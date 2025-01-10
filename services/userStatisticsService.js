@@ -21,11 +21,16 @@ class UserStatisticsService {
 
         await UserStatistics.updateOne({ userId }, updateObject);
         const updatedStatistics = await UserStatistics.findOne({ userId });
+        const userAchievements = await achievementService.findUserAchievements(userId);
+
+        const achievementTitles = userAchievements?.map(achievement => achievement.title) || [];
+        console.log(achievementTitles);
 
         let newUserAchievement = null;
-        if (updatedStatistics.correctAnswersCount === 5) newUserAchievement = await achievementService.issueAchievement("5 correct answers", userId);
-        if (updatedStatistics.correctAnswersCount === 10) newUserAchievement = await achievementService.issueAchievement("10 correct answers", userId);
-        if (updatedStatistics.coveredTopicsCount === 1) newUserAchievement = await achievementService.issueAchievement("First covered module", userId);
+        if (updatedStatistics.correctAnswersCount >= 5 && !achievementTitles.includes("5 верных ответов")) newUserAchievement = await achievementService.issueAchievement("5 correct answers", userId);
+        if (updatedStatistics.correctAnswersCount >= 10 && !achievementTitles.includes("10 верных ответов")) newUserAchievement = await achievementService.issueAchievement("10 correct answers", userId);
+        if (updatedStatistics.correctAnswersCount >= 100 && !achievementTitles.includes("100 верных ответов")) newUserAchievement = await achievementService.issueAchievement("100 correct answers", userId);
+        if (updatedStatistics.coveredTopicsCount >= 1 && !achievementTitles.includes("Успешный старт")) newUserAchievement = await achievementService.issueAchievement("First covered module", userId);
 
         return {
             updatedStatistics,

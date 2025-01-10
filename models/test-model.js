@@ -1,24 +1,6 @@
 import mongoose from "mongoose";
 
 const testSchema = new mongoose.Schema({
-    question: {
-        type: String,
-        required: true,
-    },
-    answers: [{
-        value: {
-            type: String,
-            required: true,
-        },
-        isCorrect: {
-            type: Boolean,
-            default: false,
-        },
-        hint: {
-            type: String,
-            default: "",
-        },
-    }],
     withTimer: {
         type: Boolean,
         default: false,
@@ -29,6 +11,7 @@ const testSchema = new mongoose.Schema({
     },
     moduleId: {
         type: String,
+        required: true,
     },
 }, { timestamps: true });
 

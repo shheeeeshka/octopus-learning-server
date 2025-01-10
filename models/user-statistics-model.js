@@ -21,6 +21,10 @@ const userStatisticsSchema = new mongoose.Schema({
         type: [String],
         default: [],
     },
+    level: {
+        type: String,
+        default: "",
+    },
     userId: {
         type: String,
         required: true,

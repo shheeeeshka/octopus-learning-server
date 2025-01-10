@@ -9,6 +9,7 @@ import User from "../models/user-model.js";
 import UserStatistics from "../models/user-statistics-model.js";
 import UserStatisticsDto from "../dtos/userStatisticsDto.js";
 import achievementService from "./achievementService.js";
+import UserRole from "../models/user-role-models.js";
 
 class AuthService {
     async registration(email = "", password = "", name = "", surname = "") {
@@ -21,21 +22,29 @@ class AuthService {
         const activationLink = uuid.v4();
         const hashPassword = await bcrypt.hash(password, 5);
 
+        let userRole = await UserRole.findOne({ role: "user" });
+        if (!userRole) {
+            userRole = await UserRole.create({ role: "user", permissions: ["add_friends"] });
+        }
+
         const user = await User.create({
             email,
             password: hashPassword,
             activationLink,
             name,
             surname,
+            roleId: userRole._id,
         });
+
         const userStatistics = await UserStatistics.create({ userId: user._id });
         const newUserAchievement = await achievementService.issueAchievement("", user._id);
 
-        // await mailService.sendActivationMail(email, `${process.env.API_URL}/user/activation/${activationLink}`); add smtp data to send activation mail
+        // await mailService.sendActivationMail(email, `${process.env.API_URL}/user/activation/${activationLink}`); add smtp data to send activation mail 
 
-        const userDto = new UserDto(user);
+        const userDto = new UserDto({ ...user._doc, role: userRole.role });
         const userStatisticsDto = new UserStatisticsDto(userStatistics);
         console.log({ ...userDto, ...userStatisticsDto });
+
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
@@ -54,14 +63,16 @@ class AuthService {
         }
 
         const isPassEq = await bcrypt.compare(password, user.password);
-        if (!isPassEq) {
-            throw ApiError.BadRequest(`Incorrect password`)
-        }
+        if (!isPassEq) throw ApiError.BadRequest(`Incorrect password`)
 
-        const userDto = new UserDto(user);
-        const userStatistics = await UserStatistics.findOne({ userId: user._id });
+        const userRole = await UserRole.findOne({ _id: user.roleId });
+        if (!userRole) throw ApiError.BadRequest(`User role doesn't exist`);
+
+        const userDto = new UserDto({ ...user._doc, role: userRole.role });
+        const userStatistics = await UserStatistics.findOne({ userId: userDto._id });
         const userStatisticsDto = new UserStatisticsDto(userStatistics);
-        const userAchievements = await achievementService.findUserAchievements({ userId: user._id });
+        const userAchievements = await achievementService.findUserAchievements(userDto._id);
+
         const tokens = tokenService.generateTokens({ ...userDto });
         await tokenService.saveToken(userDto._id, tokens.refreshToken);
 
@@ -90,10 +101,11 @@ class AuthService {
         }
 
         const user = await User.findOne({ _id: userData._id });
-        const userDto = new UserDto(user);
+        const userRole = await UserRole.findOne({ _id: user.roleId });
+        const userDto = new UserDto({ ...user._doc, role: userRole.role });
         const userStatistics = await UserStatistics.findOne({ userId: user._id });
         const userStatisticsDto = new UserStatisticsDto(userStatistics);
-        const userAchievements = await achievementService.findUserAchievements({ userId: user._id });
+        const userAchievements = await achievementService.findUserAchievements(user._id);
         const tokens = tokenService.generateTokens({ ...userDto });
 
         await tokenService.saveToken(userDto._id, tokens.refreshToken);
