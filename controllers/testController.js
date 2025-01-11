@@ -3,8 +3,8 @@ import testService from "../services/testService.js";
 class TestController {
     async createTest(req, res, next) {
         try {
-            const { questions, moduleId, withTimer, testType } = req.body;
-            const test = await testService.createTest(questions, moduleId, withTimer, testType);
+            const { questions, moduleId, timer, testType } = req.body;
+            const test = await testService.createTest(questions, moduleId, timer, testType);
             return res.json(test);
         } catch (e) {
             next(e);
