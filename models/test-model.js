@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const testSchema = new mongoose.Schema({
-    withTimer: {
-        type: Boolean,
-        default: false,
+    timer: {
+        type: String,
+        default: "",
     },
     type: {
         type: String,

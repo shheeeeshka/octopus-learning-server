@@ -15,6 +15,7 @@ class TestController {
         try {
             const { moduleId } = req.params;
             const test = await testService.getTest(moduleId);
+            console.log({ test });
             return res.json(test);
         } catch (e) {
             next(e);

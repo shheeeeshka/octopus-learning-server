@@ -3,8 +3,8 @@ import TestQuestion from "../models/test-question-model.js";
 import TestAnswer from "../models/test-answer-model.js";
 
 class TestService {
-    async createTest(questions = [], moduleId = "", withTimer = false, testType = "default") {
-        const newTest = await Test.create({ moduleId, withTimer, type: testType }).catch(() => null);
+    async createTest(questions = [], moduleId = "", timer = "", testType = "default") {
+        const newTest = await Test.create({ moduleId, timer, type: testType }).catch(() => null);
 
         const createdQuestions = await Promise.all(questions.map(async (q) => {
             const newQuestion = await TestQuestion.create({
@@ -48,7 +48,7 @@ class TestService {
 
         return {
             moduleId: test.moduleId,
-            withTimer: test.withTimer,
+            timer: test.timer,
             type: test.type,
             questions: questionsWithAnswers
         };
@@ -74,7 +74,7 @@ class TestService {
 
             return {
                 moduleId: test.moduleId,
-                withTimer: test.withTimer,
+                timer: test.timer,
                 type: test.type,
                 questions: questionsWithAnswers
             };
@@ -105,7 +105,7 @@ export default new TestService();
 
 // const testData = {
 //     moduleId: "12345",
-//     withTimer: true,
+//     timer: "3",
 //     type: "quiz",
 //     questions: [
 //         {
