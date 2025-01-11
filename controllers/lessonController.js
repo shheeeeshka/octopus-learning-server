@@ -15,6 +15,7 @@ class LessonController {
     async getLessons(req, res, next) {
         try {
             const lessons = await lessonService.getLessons();
+            console.log({ lessons });
             return res.json(lessons);
         } catch (e) {
             next(e);
