@@ -21,6 +21,16 @@ class LessonController {
             next(e);
         }
     }
+
+    async deleteLesson(req, res, next) {
+        try {
+            const { lessonId } = req.params;
+            const deletedLesson = await lessonService.deleteLesson(lessonId);
+            return res.json(deletedLesson);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export default new LessonController();

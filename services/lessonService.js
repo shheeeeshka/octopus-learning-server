@@ -10,7 +10,7 @@ class LessonService {
     }
 
     async getLessons() {
-        const lessons = await Lesson.find().catch(() => null);
+        const lessons = await Lesson.find().catch(() => []);
         return lessons;
     }
 
